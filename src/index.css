@@ -62,7 +62,7 @@ header h1 {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 2.5rem;
+  padding: 2.6rem;
   width: 100%;
   max-width: 420px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
