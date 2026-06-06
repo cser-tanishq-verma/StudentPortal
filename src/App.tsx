@@ -1,8 +1,23 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabase'
 
+interface Session {
+  user?: {
+    id: string
+    email?: string
+  }
+}
+
+interface Profile {
+  id: string
+  first_name?: string
+  last_name?: string
+  student_id?: string
+  department?: string
+}
+
 export default function App() {
-  const [session, setSession] = useState<any>(null)
+  const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -79,8 +94,9 @@ function Auth() {
         if (error) throw error
         // Auto sign-in if confirm email is disabled
       }
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: Error | unknown) {
+      const error = err instanceof Error ? err : new Error('Unknown error occurred')
+      setError(error.message)
     } finally {
       setLoading(false)
     }
@@ -142,16 +158,16 @@ function Auth() {
   )
 }
 
-function Dashboard({ user }: { user: any }) {
+function Dashboard({ user }: { user: { id: string; email?: string } }) {
   const [searchQuery, setSearchQuery] = useState('')
-  const [profiles, setProfiles] = useState<any[]>([])
-  const [myProfile, setMyProfile] = useState<any>(null)
+  const [profiles, setProfiles] = useState<Profile[]>([])
+  const [myProfile, setMyProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchMyProfile()
     fetchProfiles()
-  }, [])
+  }, [user.id])
 
   const fetchMyProfile = async () => {
     const { data } = await supabase
