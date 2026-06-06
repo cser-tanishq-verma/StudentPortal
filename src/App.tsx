@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from './lib/supabase'
 
 interface Session {
@@ -164,21 +164,16 @@ function Dashboard({ user }: { user: { id: string; email?: string } }) {
   const [myProfile, setMyProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchMyProfile()
-    fetchProfiles()
-  }, [user.id])
-
-  const fetchMyProfile = async () => {
+  const fetchMyProfile = useCallback(async () => {
     const { data } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', user.id)
       .single()
     setMyProfile(data)
-  }
+  }, [user.id])
 
-  const fetchProfiles = async (query = '') => {
+  const fetchProfiles = useCallback(async (query = '') => {
     setLoading(true)
     let q = supabase.from('profiles').select('*').limit(50)
     
@@ -189,7 +184,12 @@ function Dashboard({ user }: { user: { id: string; email?: string } }) {
     const { data } = await q
     if (data) setProfiles(data)
     setLoading(false)
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchMyProfile()
+    fetchProfiles()
+  }, [fetchMyProfile, fetchProfiles])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
