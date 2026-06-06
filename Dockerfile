@@ -20,7 +20,15 @@ RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 # Copy built app to nginx html folder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# Change ownership to nginx user for security
+RUN chown -R nginx:nginx /usr/share/nginx/html
+
+# Switch to non-root user
+USER nginx
+
 # Expose default web port
 EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
 
 CMD ["nginx", "-g", "daemon off;"]
