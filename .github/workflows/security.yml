@@ -37,6 +37,8 @@ jobs:
       # ---- GATE 4: Image scan ----
       - name: Image scan (Trivy)
         uses: aquasecurity/trivy-action@master
+        env:
+          TRIVY_DISABLE_VEX_NOTICE: 'true'
         with:
           image-ref: secure-portal:${{ github.sha }}
           severity: HIGH,CRITICAL

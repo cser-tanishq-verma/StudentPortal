@@ -14,6 +14,9 @@ RUN npm run build
 # Production stage
 FROM nginx:stable-alpine AS production
 
+# Update Alpine packages to patch vulnerabilities
+RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
+
 # Copy built app to nginx html folder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
