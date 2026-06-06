@@ -158,7 +158,10 @@ function Auth() {
   )
 }
 
-function Dashboard({ user }: { user: { id: string; email?: string } }) {
+function Dashboard({ user }: { user?: { id: string; email?: string } }) {
+  if (!user) {
+    return <div>User not found</div>
+  }
   const [searchQuery, setSearchQuery] = useState('')
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [myProfile, setMyProfile] = useState<Profile | null>(null)
